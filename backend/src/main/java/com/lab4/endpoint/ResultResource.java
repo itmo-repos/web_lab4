@@ -1,5 +1,6 @@
 package com.lab4.endpoint;
 
+import com.lab4.auth.Secured;
 import com.lab4.bean.ResultService;
 import com.lab4.entity.ResultEntity;
 
@@ -19,6 +20,7 @@ public class ResultResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Secured
     public List<String> getResults() {
 
         List<ResultEntity> results = resultService.getAllResults();

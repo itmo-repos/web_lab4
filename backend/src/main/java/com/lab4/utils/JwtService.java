@@ -22,8 +22,7 @@ public class JwtService {
 
     private SecretKey key;
 
-    public JwtService(String secret) {
-    
+    public JwtService() {
     }
 
     @PostConstruct
