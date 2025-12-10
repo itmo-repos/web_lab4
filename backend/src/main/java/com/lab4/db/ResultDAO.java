@@ -6,7 +6,6 @@ import com.lab4.entity.ResultEntity;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-
 import jakarta.ejb.Stateless;
 
 @Stateless
@@ -28,9 +27,7 @@ public class ResultDAO implements GenericDAO<ResultEntity, Long> {
 
     @Override
     public List<ResultEntity> findAll() {
-        var cm = entityManager.getCriteriaBuilder().createQuery(ResultEntity.class);
-        var root = cm.from(ResultEntity.class);
-        return entityManager.createQuery(cm.select(root)).getResultList();
+        return entityManager.createQuery("SELECT r FROM ResultEntity r", ResultEntity.class).getResultList();
     }
 
     @Override
