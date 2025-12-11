@@ -2,6 +2,7 @@ package com.lab4.db;
 
 import java.util.List;
 
+import com.lab4.db.interfaces.GenericDAO;
 import com.lab4.entity.ResultEntity;
 
 import jakarta.persistence.EntityManager;

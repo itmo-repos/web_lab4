@@ -7,6 +7,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
@@ -36,11 +38,18 @@ public class JwtService {
         return Jwts.builder()
                 .subject(username)
                 .claim("roles", roles)
-                .issuer("my-jjwt-auth")
+                .issuer("lab4")
                 .issuedAt(new Date(now))
-                .expiration(new Date(now + securityConfig.getAccessTokenDuration()))
+                .expiration(new Date(now + securityConfig.getAccessTokenDuration()*1000))
                 .signWith(key, Jwts.SIG.HS256)
                 .compact();
+    }
+
+    public String generateRefreshToken() {
+        byte[] randomBytes = new byte[32];
+        new SecureRandom().nextBytes(randomBytes);
+        String refreshTokenRaw = Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
+        return refreshTokenRaw;
     }
 
     public Jws<Claims> parseToken(String token) throws JwtException {
@@ -49,4 +58,6 @@ public class JwtService {
                 .build()
                 .parseSignedClaims(token);
     }
+
+
 }

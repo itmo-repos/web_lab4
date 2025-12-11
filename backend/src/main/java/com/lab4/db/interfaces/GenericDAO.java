@@ -1,4 +1,4 @@
-package com.lab4.db;
+package com.lab4.db.interfaces;
 
 import java.util.List;
 

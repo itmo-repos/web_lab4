@@ -36,7 +36,7 @@ public class JwtAuthFilter implements ContainerRequestFilter {
                 return;
             }
 
-            String token = authHeader.split("Bearer ")[1];
+            String token = authHeader.substring("Bearer ".length()).trim();
 
             try {
                 Jws<Claims> claims = jwtService.parseToken(token);

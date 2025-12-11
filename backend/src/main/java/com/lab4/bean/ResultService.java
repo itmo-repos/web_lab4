@@ -5,7 +5,7 @@ import jakarta.inject.Inject;
 
 import java.util.List;
 
-import com.lab4.db.GenericDAO;
+import com.lab4.db.interfaces.GenericDAO;
 import com.lab4.entity.ResultEntity;
 
 @ApplicationScoped

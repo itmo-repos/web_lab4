@@ -1,5 +1,6 @@
 package com.lab4.db;
 
+import com.lab4.db.interfaces.UserDAOLocal;
 import com.lab4.entity.UserEntity;
 
 import jakarta.ejb.Stateless;
@@ -8,7 +9,7 @@ import jakarta.persistence.PersistenceContext;
 import java.util.List;
 
 @Stateless
-public class UserDAO implements GenericDAO<UserEntity, Long> {
+public class UserDAO implements UserDAOLocal {
 
     @PersistenceContext(unitName = "lab4")
     private EntityManager entityManager;
@@ -39,6 +40,7 @@ public class UserDAO implements GenericDAO<UserEntity, Long> {
         entityManager.remove(entityManager.contains(user) ? user : entityManager.merge(user));
     }
 
+    @Override
     public UserEntity findByUsername(String username) {
         List<UserEntity> users = entityManager.createQuery(
             "SELECT u FROM UserEntity u WHERE u.username = :username", UserEntity.class)

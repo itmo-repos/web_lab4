@@ -5,7 +5,7 @@ import lombok.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "lab4_users")
+@Table(name = "lab4_users", schema = "s467669")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
