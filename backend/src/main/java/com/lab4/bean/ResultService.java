@@ -5,14 +5,16 @@ import jakarta.inject.Inject;
 
 import java.util.List;
 
-import com.lab4.db.interfaces.GenericDAO;
+import com.lab4.db.interfaces.ResultDAOLocal;
+import com.lab4.dto.PointRequest;
 import com.lab4.entity.ResultEntity;
+import com.lab4.model.AreaHitChecker;
 
 @ApplicationScoped
 public class ResultService {
 
     @Inject
-    private GenericDAO<ResultEntity, Long> resultDAO;
+    private ResultDAOLocal resultDAO;
 
     public List<ResultEntity> getAllResults() {
         return resultDAO.findAll();
@@ -20,6 +22,16 @@ public class ResultService {
 
     public ResultEntity getResult(Long id) {
         return resultDAO.find(id);
+    }
+
+    public void addResultBasedOnRequest(PointRequest request) {
+        ResultEntity newPoint = ResultEntity.builder()
+                                            .x(request.x())
+                                            .y(request.y())
+                                            .r(request.r())
+                                            .hit(AreaHitChecker.checkHit(request))
+                                            .build();
+        resultDAO.save(newPoint);
     }
 
     public void addResult(ResultEntity result) {
@@ -32,5 +44,9 @@ public class ResultService {
 
     public void deleteResult(ResultEntity result) {
         resultDAO.delete(result);
+    }
+
+    public void clearAll() {
+        resultDAO.clearAll();
     }
 }
