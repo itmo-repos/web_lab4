@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "primereact": "^10.9.7",
+    "three": "^0.182.0"
+  }
+}

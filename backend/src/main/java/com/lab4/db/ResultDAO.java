@@ -44,6 +44,6 @@ public class ResultDAO implements ResultDAOLocal {
 
     @Override
     public void clearAll() {
-        // Реализовать удаление
+        entityManager.createQuery("DELETE FROM ResultEntity r").executeUpdate();
     }
 }
