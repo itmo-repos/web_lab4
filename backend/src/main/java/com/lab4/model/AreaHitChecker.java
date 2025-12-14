@@ -44,7 +44,7 @@ public class AreaHitChecker {
 
         BigDecimal half = new BigDecimal("0.5", MATH_CONTEXT);
         
-        if (xBD.signum() > 0 && yBD.signum() > 0) {
+        if (xBD.signum() >= 0 && yBD.signum() >= 0) {
 
             BigDecimal xSquared = xBD.multiply(xBD, MATH_CONTEXT);
             BigDecimal ySquared = yBD.multiply(yBD, MATH_CONTEXT);
@@ -54,10 +54,10 @@ public class AreaHitChecker {
 
             return sum.compareTo(rHalfSquared) <= 0;
 
-        } else if (xBD.signum() <= 0 && yBD.signum() >= 0) {
+        } else if (xBD.signum() < 0 && yBD.signum() > 0) {
             return false;
 
-        } else if (xBD.signum() < 0 && yBD.signum() < 0) {
+        } else if (xBD.signum() <= 0 && yBD.signum() <= 0) {
 
             BigDecimal rHalf = rBD.multiply(half, MATH_CONTEXT);
             BigDecimal negX = xBD.negate();

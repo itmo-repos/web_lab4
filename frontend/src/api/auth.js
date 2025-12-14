@@ -1,25 +1,16 @@
-import axios from 'axios';
+import { api } from '.'
 
-// базовый экземпляр axios с базовым URL
-const api = axios.create({
-  baseURL: 'api/', // поменяй на свой бэкенд
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// авторизация (логин)
-export const login = async (loginData) => {
+export const apiLogin = async (loginData) => {
   try {
     const response = await api.post('/auth/login', loginData);
-    return response.data; // токены, пользователь и т.д.
+    return response.data;
   } catch (err) {
-    throw err.response?.data || { message: 'Ошибка на сервере' };
+    throw err.response.data || { message: 'Ошибка на сервере' };
   }
 };
 
 // регистрация
-export const register = async (registerData) => {
+export const apiRegister = async (registerData) => {
   try {
     const response = await api.post('/auth/register', registerData);
     return response.data;
@@ -28,4 +19,28 @@ export const register = async (registerData) => {
   }
 };
 
-export default api;
+export const apiLogout = async () => {
+  try {
+    const refresh = localStorage.getItem('refreshToken');
+    if (refresh) {
+      const response = await api.post('/auth/logout', { refreshToken:refresh });
+      return response.data;
+    }
+  } catch (err) {
+    throw err.response.data || { message: 'Ошибка на сервере' };
+  }
+};
+
+export const apiRefresh = async () => {
+  try {
+    const refresh = localStorage.getItem('refreshToken');
+    if (refresh) {
+      const response = await api.post('/auth/refresh', { refreshToken:refresh });
+      return {accessToken:response.data.accessToken, refreshToken:response.data.refreshToken};
+    }
+  } catch (err) {
+    throw err.response.data || { message: 'Ошибка на сервере' };
+  }
+};
+
+

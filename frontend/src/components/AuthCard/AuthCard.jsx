@@ -1,23 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './AuthCard.css';
 
-import { login, register } from '../../api/auth';
-
+import { apiLogin, apiRegister } from '../../api/auth';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext/AuthContext';
 
 export function AuthCard() {
+  const { saveTokens, isAuthenticated } = useAuth(); 
+  const navigate = useNavigate();
+
   const [loginValue, setLoginValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/main');
+        }
+  }, [isAuthenticated]);
 
   const handleLogin = async () => {
     setError('');
     setSuccess('');
     try {
-      const data = await login({ username: loginValue, password: passwordValue });
-      console.log('Успешный логин:', data);
-      // тут можно сохранять токен в localStorage или context
+      const data = await apiLogin({ username: loginValue, password: passwordValue });
+      saveTokens(data.accessToken, data.refreshToken);
+      navigate('/main');
     } catch (err) {
       setError(err.message || 'Ошибка при входе');
     }
@@ -27,8 +36,7 @@ export function AuthCard() {
     setError('');
     setSuccess('');
     try {
-      const data = await register({ username: loginValue, password: passwordValue });
-      console.log('Успешная регистрация:', data);
+      const data = await apiRegister({ username: loginValue, password: passwordValue });
       setSuccess('Успешно! Попробуйте авторизоваться');
     } catch (err) {
       setError(err.message || 'Ошибка при регистрации');

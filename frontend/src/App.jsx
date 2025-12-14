@@ -2,15 +2,12 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import {AuthPage} from './pages/AuthPage/AuthPage';
 import {MainPage} from './pages/MainPage/MainPage';
 import './App.css';
+import { useAuth } from './components/AuthContext/AuthContext';
 
-
-function checkAuth() {
-  return localStorage.getItem('authToken') !== null;
-}
 
 
 export function App() {
-  const isAuthenticated = checkAuth(); 
+  const { isAuthenticated } = useAuth(); 
 
   return (
     <BrowserRouter basename="/lab4">
