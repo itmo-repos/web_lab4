@@ -32,7 +32,7 @@ export function AuthProvider({ children }) {
         if (!refreshPromise) {
           refreshPromise = apiRefresh()
             .then(({ data }) => {
-              auth.saveTokens(data.accessToken, data.refreshToken);
+              saveTokens(data.accessToken, data.refreshToken);
               return data.accessToken;
             })
             .finally(() => {

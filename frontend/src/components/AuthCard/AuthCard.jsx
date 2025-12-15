@@ -5,6 +5,29 @@ import { apiLogin, apiRegister } from '../../api/auth';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext/AuthContext';
 
+const MIN_LEN = 5;
+const MAX_LEN = 50;
+
+function validate(login, password) {
+  if (login.length < MIN_LEN) {
+    return `Логин должен быть минимум ${MIN_LEN} символов`;
+  }
+
+  if (login.length > MAX_LEN) {
+    return `Логин должен быть не больше ${MAX_LEN} символов`;
+  }
+
+  if (password.length < MIN_LEN) {
+    return `Пароль должен быть минимум ${MIN_LEN} символов`;
+  }
+
+  if (password.length > MAX_LEN) {
+    return `Пароль должен быть не больше ${MAX_LEN} символов`;
+  }
+
+  return null;
+}
+
 export function AuthCard() {
   const { saveTokens, isAuthenticated } = useAuth(); 
   const navigate = useNavigate();
@@ -21,10 +44,16 @@ export function AuthCard() {
   }, [isAuthenticated]);
 
   const handleLogin = async () => {
+    const validationError = validate(loginValue, passwordValue);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     setError('');
     setSuccess('');
     try {
-      const data = await apiLogin({ username: loginValue, password: passwordValue });
+      const { data } = await apiLogin({ username: loginValue, password: passwordValue });
       saveTokens(data.accessToken, data.refreshToken);
       navigate('/main');
     } catch (err) {
@@ -33,10 +62,16 @@ export function AuthCard() {
   };
 
   const handleRegister = async () => {
+    const validationError = validate(loginValue, passwordValue);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+    
     setError('');
     setSuccess('');
     try {
-      const data = await apiRegister({ username: loginValue, password: passwordValue });
+      await apiRegister({ username: loginValue, password: passwordValue });
       setSuccess('Успешно! Попробуйте авторизоваться');
     } catch (err) {
       setError(err.error);
@@ -48,8 +83,21 @@ export function AuthCard() {
       <div className="auth-card">
         <h2>Вход в систему</h2>
 
-        <input type="text" placeholder="Логин" className="auth-input" onChange={e => setLoginValue(e.target.value)} maxLength={50} required />
-        <input type="password" placeholder="Пароль" className="auth-input" onChange={e => setPasswordValue(e.target.value)} maxLength={50} required />
+        <input id="login" 
+              type="text" 
+              placeholder="Логин" 
+              className="auth-input"
+              onChange={e => setLoginValue(e.target.value)} 
+              required 
+              />
+
+        <input id="password" 
+              type="password" 
+              placeholder="Пароль" 
+              className="auth-input" 
+              onChange={e => setPasswordValue(e.target.value)}
+              required 
+              />
 
         {error && <div className="auth-error">{error}</div>}
         {success && <div className="auth-success">{success}</div>}
