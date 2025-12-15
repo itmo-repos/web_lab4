@@ -24,7 +24,7 @@ export function MainPage() {
 
   const handleShowAllPoints = async () => {
     try {
-      const points = await getAllPoints(auth);
+      const { data: points } = await getAllPoints(auth);
       console.log('Все точки:', points);
     } catch (err) {
       console.error('Ошибка получения точек:', err);

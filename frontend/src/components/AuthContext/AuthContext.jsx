@@ -31,13 +31,14 @@ export function AuthProvider({ children }) {
         
         if (!refreshPromise) {
           refreshPromise = apiRefresh()
-            .then(tokens => {
-              saveTokens(tokens.accessToken, tokens.refreshToken);
+            .then(({ data }) => {
+              auth.saveTokens(data.accessToken, data.refreshToken);
+              return data.accessToken;
             })
             .finally(() => {
               clearRefreshPromise();
             });
-    
+
           setRefreshPromise(refreshPromise);
         }
   

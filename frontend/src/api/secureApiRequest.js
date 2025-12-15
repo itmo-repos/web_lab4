@@ -1,5 +1,6 @@
 import { api } from '.';
 import { apiRefresh } from './auth';
+import { normalizeApiError } from './apiError';
 import {
   getRefreshPromise,
   setRefreshPromise,
@@ -8,32 +9,34 @@ import {
 
 export async function secureApiRequest(auth, method, url, data = {}) {
   try {
-    return (await api({
+    const response = await api({
       method,
       url,
       data,
       headers: auth.accessToken
         ? { Authorization: `Bearer ${auth.accessToken}` }
         : {},
-    })).data;
+    });
+
+    return { data: response.data };
 
   } catch (err) {
     if (err.response?.status !== 401) {
-      throw err.response?.data || err;
+      throw normalizeApiError(err);
     }
 
     if (!localStorage.getItem('refreshToken')) {
       auth.destroyTokens();
-      throw new Error('Нет refresh токена');
+      throw { error: 'Нет refresh токена' };
     }
 
     let refreshPromise = getRefreshPromise();
 
     if (!refreshPromise) {
       refreshPromise = apiRefresh()
-        .then(tokens => {
-          auth.saveTokens(tokens.accessToken, tokens.refreshToken);
-          return tokens.accessToken;
+        .then(({ data }) => {
+          auth.saveTokens(data.accessToken, data.refreshToken);
+          return data.accessToken;
         })
         .finally(() => {
           clearRefreshPromise();
@@ -47,18 +50,20 @@ export async function secureApiRequest(auth, method, url, data = {}) {
       newAccess = await refreshPromise;
     } catch {
       auth.destroyTokens();
-      throw new Error('Refresh не удался');
+      throw { error: 'Refresh не удался' };
     }
 
     try {
-      return (await api({
+      const retryResponse = await api({
         method,
         url,
         data,
         headers: { Authorization: `Bearer ${newAccess}` },
-      })).data;
+      });
+
+      return { data: retryResponse.data };
     } catch (retryErr) {
-      throw retryErr.response?.data || retryErr;
+      throw normalizeApiError(retryErr);
     }
   }
 }

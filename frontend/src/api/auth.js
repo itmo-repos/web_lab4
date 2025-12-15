@@ -1,46 +1,56 @@
 import { api } from '.'
+import { normalizeApiError } from './apiError';
 
 export const apiLogin = async (loginData) => {
   try {
-    const response = await api.post('/auth/login', loginData);
-    return response.data;
+    const { data } = await api.post('/auth/login', loginData);
+    return { data };
   } catch (err) {
-    throw err.response.data || { message: 'Ошибка на сервере' };
+    throw normalizeApiError(err);
   }
 };
 
 // регистрация
-export const apiRegister = async (registerData) => {
+export async function apiRegister(registerData) {
   try {
-    const response = await api.post('/auth/register', registerData);
-    return response.data;
+    const { data } = await api.post('/auth/register', registerData);
+    return { data };
   } catch (err) {
-    throw err.response.data || { message: 'Ошибка на сервере' };
+    throw normalizeApiError(err);
   }
-};
+}
 
-export const apiLogout = async () => {
+export async function apiLogout() {
   try {
-    const refresh = localStorage.getItem('refreshToken');
-    if (refresh) {
-      const response = await api.post('/auth/logout', { refreshToken:refresh });
-      return response.data;
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) {
+      throw { error: 'Нет refresh токена' };
     }
-  } catch (err) {
-    throw err.response.data || { message: 'Ошибка на сервере' };
-  }
-};
 
-export const apiRefresh = async () => {
+    const { data } = await api.post('/auth/logout', { refreshToken });
+    return { data };
+  } catch (err) {
+    throw normalizeApiError(err);
+  }
+}
+
+export async function apiRefresh() {
   try {
-    const refresh = localStorage.getItem('refreshToken');
-    if (refresh) {
-      const response = await api.post('/auth/refresh', { refreshToken:refresh });
-      return {accessToken:response.data.accessToken, refreshToken:response.data.refreshToken};
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) {
+      throw { error: 'Нет refresh токена' };
     }
-  } catch (err) {
-    throw err.response.data || { message: 'Ошибка на сервере' };
-  }
-};
 
+    const { data } = await api.post('/auth/refresh', { refreshToken });
+
+    return {
+      data: {
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+      },
+    };
+  } catch (err) {
+    throw normalizeApiError(err);
+  }
+}
 

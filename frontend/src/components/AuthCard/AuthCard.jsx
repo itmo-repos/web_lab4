@@ -28,7 +28,7 @@ export function AuthCard() {
       saveTokens(data.accessToken, data.refreshToken);
       navigate('/main');
     } catch (err) {
-      setError(err.message || 'Ошибка при входе');
+      setError(err.error);
     }
   };
 
@@ -39,7 +39,7 @@ export function AuthCard() {
       const data = await apiRegister({ username: loginValue, password: passwordValue });
       setSuccess('Успешно! Попробуйте авторизоваться');
     } catch (err) {
-      setError(err.message || 'Ошибка при регистрации');
+      setError(err.error);
     }
   };
 
