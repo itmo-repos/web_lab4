@@ -19,7 +19,7 @@ public class HashGenerator {
     @Inject
     private SecurityConfig securityConfig;
     
-    public String hashPassword(String password, String salt) throws Exception {
+    public String hashPassword(String password, String salt) {
         return hashString(securityConfig.getPasswordPepper() + password, salt);
     }
 

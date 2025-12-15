@@ -2,6 +2,7 @@ package com.lab4.bean;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Response;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -15,6 +16,7 @@ import com.lab4.db.interfaces.RefreshTokenDAOLocal;
 import com.lab4.dto.TokenResponse;
 import com.lab4.entity.RefreshTokenEntity;
 import com.lab4.entity.UserEntity;
+import com.lab4.exception.AuthException;
 import com.lab4.utils.HashGenerator;
 import com.lab4.utils.JwtService;
 import com.lab4.utils.SaltGenerator;
@@ -37,9 +39,17 @@ public class AuthService {
     @Inject
     private RefreshTokenDAOLocal refreshTokenDAO;
 
-    public UserEntity register(String username, String password) throws Exception {
+    public UserEntity register(String username, String password) {
+        if (username.length() < 5 || username.length() > 50) {
+            throw new AuthException(Response.Status.BAD_REQUEST,"Длина логина должна составлять от 5 до 50 символов");
+        }
+        
+        if (password.length() < 5 || password.length() > 50) {
+            throw new AuthException(Response.Status.BAD_REQUEST,"Длина пароля должна составлять от 5 до 50 символов");
+        }
+
         if (userDAO.findByUsername(username) != null) {
-            throw new RuntimeException("User already exists");
+            throw new AuthException(Response.Status.CONFLICT, "Логин уже используется другим пользователем");
         }
 
         String salt = SaltGenerator.generateSalt();
@@ -57,7 +67,7 @@ public class AuthService {
     }
 
 
-    private boolean verifyPassword(String password, UserEntity user) throws Exception {
+    private boolean verifyPassword(String password, UserEntity user) {
         String computedHash = hashGenerator.hashPassword(password, user.getSalt());
 
         return MessageDigest.isEqual(computedHash.getBytes(StandardCharsets.UTF_8), user.getPasswordHash().getBytes(StandardCharsets.UTF_8));
@@ -80,10 +90,18 @@ public class AuthService {
         return refreshTokenRaw;
     }
 
-    public TokenResponse login(String username, String password) throws Exception {
+    public TokenResponse login(String username, String password) {
+        if (username.length() < 5 || username.length() > 50) {
+            throw new AuthException(Response.Status.BAD_REQUEST,"Длина логина должна составлять от 5 до 50 символов");
+        }
+        
+        if (password.length() < 5 || password.length() > 50) {
+            throw new AuthException(Response.Status.BAD_REQUEST,"Длина пароля должна составлять от 5 до 50 символов");
+        }
+
         UserEntity user = userDAO.findByUsername(username);
         if (user == null || !verifyPassword(password, user)) {
-            throw new RuntimeException("Invalid username or password");
+            throw new AuthException(Response.Status.UNAUTHORIZED, "Неверный логин или пароль");
         }
 
         String accessToken = jwtService.generateToken(user.getUsername(), List.of("user"));
@@ -96,12 +114,12 @@ public class AuthService {
 
         RefreshTokenEntity token = refreshTokenDAO.findByTokenHash(refreshTokenHash);
         if (token == null || token.getRevoked() || token.getExpiresAt().isBefore(Instant.now())) {
-            throw new RuntimeException("Invalid refresh token");
+            throw new AuthException(Response.Status.UNAUTHORIZED, "Ошибка обновления токена");
         }
 
         UserEntity user = userDAO.find(token.getUserId());
         if (user == null) {
-            throw new RuntimeException("User not found");
+            throw new AuthException(Response.Status.UNAUTHORIZED, "Ошибка обновления токена");
         }
 
         String accessToken = jwtService.generateToken(user.getUsername(), List.of("user"));

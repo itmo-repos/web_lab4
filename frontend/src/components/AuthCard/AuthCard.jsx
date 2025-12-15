@@ -48,8 +48,8 @@ export function AuthCard() {
       <div className="auth-card">
         <h2>Вход в систему</h2>
 
-        <input type="text" placeholder="Логин" className="auth-input" onChange={e => setLoginValue(e.target.value)} required />
-        <input type="password" placeholder="Пароль" className="auth-input" onChange={e => setPasswordValue(e.target.value)} required />
+        <input type="text" placeholder="Логин" className="auth-input" onChange={e => setLoginValue(e.target.value)} maxLength={50} required />
+        <input type="password" placeholder="Пароль" className="auth-input" onChange={e => setPasswordValue(e.target.value)} maxLength={50} required />
 
         {error && <div className="auth-error">{error}</div>}
         {success && <div className="auth-success">{success}</div>}

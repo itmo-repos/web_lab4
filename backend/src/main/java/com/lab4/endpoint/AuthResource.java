@@ -21,47 +21,25 @@ public class AuthResource {
     @POST
     @Path("/register")
     public Response register(RegisterRequest request) {
-        try {
-            UserEntity user = authService.register(request.username(), request.password());
-            // Возвращаем минимальный объект без пароля и соли
-            return Response.status(Response.Status.CREATED)
-                    .entity(new UserResponse(user.getId(), user.getUsername()))
-                    .build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.CONFLICT)
-                    .entity(e.getMessage())
-                    .build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Registration failed")
-                    .build();
-        }
+        UserEntity user = authService.register(request.username(), request.password());
+
+        return Response.status(Response.Status.CREATED)
+                .entity(new UserResponse(user.getId(), user.getUsername()))
+                .build();
     }
 
     @POST
     @Path("/login")
     public Response login(LoginRequest request) {
-        try {
-            TokenResponse tokens = authService.login(request.username(), request.password());
-            return Response.ok(tokens).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity(e.getMessage())
-                    .build();
-        }
+        TokenResponse tokens = authService.login(request.username(), request.password());
+        return Response.ok(tokens).build();
     }
 
     @POST
     @Path("/refresh")
     public Response refresh(TokenRefreshRequest request) {
-        try {
-            TokenResponse newTokens = authService.refreshAccessToken(request.refreshToken());
-            return Response.ok(newTokens).build();
-        } catch (RuntimeException e) {
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity(e.getMessage())
-                    .build();
-        }
+        TokenResponse newTokens = authService.refreshAccessToken(request.refreshToken());
+        return Response.ok(newTokens).build();
     }
 
     @POST
