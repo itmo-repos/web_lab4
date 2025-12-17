@@ -21,8 +21,31 @@ export function AuthPage() {
         />
 
         <header className="auth-header">
-          <span className="logo">Тарасов Савелий Дмитриевич, P3206, Вариант 4245</span>
+          {/* Десктоп */}
+          <div className="pill pill-desktop">
+            Тарасов Савелий Дмитриевич, P3206, Вариант 4245
+          </div>
+
+          {/* Планшет */}
+          <div className="pill pill-tablet">
+            Тарасов Савелий Дмитриевич
+          </div>
+          <div className="pill pill-tablet">
+            P3206, Вариант 4245
+          </div>
+
+          {/* Мобильный */}
+          <div className="pill pill-mobile">
+            Тарасов Савелий Дмитриевич
+          </div>
+          <div className="pill pill-mobile">
+            Вариант 4245
+          </div>
+          <div className="pill pill-mobile">
+            P3206
+          </div>
         </header>
+
 
         <AuthCard />
     </div>

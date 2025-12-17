@@ -37,6 +37,9 @@ export function AuthCard() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  const [isLoading, setIsLoading] = useState(0);
+
+
   useEffect(() => {
         if (isAuthenticated) {
             navigate('/main');
@@ -44,38 +47,54 @@ export function AuthCard() {
   }, [isAuthenticated]);
 
   const handleLogin = async () => {
+    if (isLoading) return;
+    setIsLoading(1);
+
     const validationError = validate(loginValue, passwordValue);
     if (validationError) {
       setError(validationError);
+      setIsLoading(0);
       return;
     }
 
-    setError('');
-    setSuccess('');
     try {
       const { data } = await apiLogin({ username: loginValue, password: passwordValue });
       saveTokens(data.accessToken, data.refreshToken);
       navigate('/main');
     } catch (err) {
       setError(err.error);
+      setSuccess('');
+    } finally {
+      setIsLoading(0);
     }
   };
 
   const handleRegister = async () => {
+    if (isLoading) return;
+    setIsLoading(2);
+
     const validationError = validate(loginValue, passwordValue);
     if (validationError) {
       setError(validationError);
+      setIsLoading(0);
       return;
     }
     
-    setError('');
-    setSuccess('');
     try {
       await apiRegister({ username: loginValue, password: passwordValue });
       setSuccess('Успешно! Попробуйте авторизоваться');
+      setError('');
     } catch (err) {
       setError(err.error);
+      setSuccess('');
+    } finally {
+      setIsLoading(0);
     }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // чтобы страница не перезагружалась
+    handleLogin();
   };
 
   return (
@@ -83,29 +102,33 @@ export function AuthCard() {
       <div className="auth-card">
         <h2>Вход в систему</h2>
 
-        <input id="login" 
-              type="text" 
-              placeholder="Логин" 
-              className="auth-input"
-              onChange={e => setLoginValue(e.target.value)} 
-              required 
-              />
+        <form onSubmit={handleSubmit}>
+          <input id="login" 
+                type="text" 
+                placeholder="Логин" 
+                className="auth-input"
+                onChange={e => setLoginValue(e.target.value)} 
+                required 
+                />
 
-        <input id="password" 
-              type="password" 
-              placeholder="Пароль" 
-              className="auth-input" 
-              onChange={e => setPasswordValue(e.target.value)}
-              required 
-              />
+          <input id="password" 
+                type="password" 
+                placeholder="Пароль" 
+                className="auth-input" 
+                onChange={e => setPasswordValue(e.target.value)}
+                required 
+                />
 
-        {error && <div className="auth-error">{error}</div>}
-        {success && <div className="auth-success">{success}</div>}
+          <div className={`auth-message ${error || success ? 'show' : ''}`}>
+            {error && <div className="auth-error">{error}</div>}
+            {success && <div className="auth-success">{success}</div>}
+          </div>
 
-        <div className="auth-buttons">
-          <button className="auth-btn" onClick={handleRegister}>Регистрация</button>
-          <button className="auth-btn primary" onClick={handleLogin}>Войти</button>
-        </div>
+          <div className="auth-buttons">
+            <button className="auth-btn" onClick={handleRegister} disabled={isLoading}>{isLoading == 2 ? 'Загрузка…' : 'Регистрация'}</button>
+            <button className="auth-btn primary" onClick={handleLogin} disabled={isLoading}>{isLoading == 1 ? 'Загрузка…' : 'Войти'}</button>
+          </div>
+        </form>
       </div>
     </div>
   );

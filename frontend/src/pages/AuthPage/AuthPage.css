@@ -11,32 +11,81 @@
   left: 50%;
   transform: translateX(-50%);
 
-
-  display: inline-flex;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
-  padding: 0 32px;
 
+  z-index: 10;
+  pointer-events: none;
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 32px;
   height: 64px;
 
   font-weight: 650;
   font-size: 22px;
-  
-  
 
   background: rgba(255, 255, 255, 0.6);
-  color: rgb(0, 0, 0);
-
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(16px);
 
   border-radius: 9999px;
   border: 1px solid rgba(0, 0, 0, 0.4);
 
-  box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 
-  pointer-events: none;
-  
-  z-index: 10;
+  white-space: nowrap;
+  width: fit-content;  
+  max-width: none;
+}
+
+
+@media (min-width: 1052px) {
+  .pill-desktop {
+    display: flex;
+  }
+
+  .pill-tablet,
+  .pill-mobile {
+    display: none;
+  }
+}
+
+@media (min-width: 762px) and (max-width: 1051px) {
+  .pill-tablet {
+    display: flex;
+  }
+
+  .pill-desktop,
+  .pill-mobile {
+    display: none;
+  }
+}
+
+@media (max-width: 761px) {
+  .auth-header {
+    flex-direction: column; 
+    align-items: center;
+  }
+
+  .pill-mobile {
+    display: flex;
+  }
+
+  .pill-desktop,
+  .pill-tablet {
+    display: none;
+  }
+
+  .pill {
+    height: 52px;
+    font-size: 18px;
+    padding: 0 24px;
+  }
 }
