@@ -20,7 +20,7 @@ import jakarta.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 public class ResultsResource {
 
-    @Inject // А это как работает вообще, это что, CDI бин?
+    @Inject 
     private ResultService resultService;
 
 
@@ -53,7 +53,7 @@ public class ResultsResource {
     }
 
     @DELETE
-    @Path("/clear-all") // Чекнуть именование эндпоинтов
+    @Path("/clear-all")
     @Secured
     public Response clearAll() {
         resultService.clearAll();

@@ -8,7 +8,7 @@ import { pointsAtom } from '../../atoms/points';
 
 export function ResultsTableCard() {
 
-    const points = useAtomValue(pointsAtom);
+  const points = useAtomValue(pointsAtom);
 
   return (
     <div className="results-card-container">
