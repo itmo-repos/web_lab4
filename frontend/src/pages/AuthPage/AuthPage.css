@@ -5,6 +5,12 @@
   position: relative;
 }
 
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+}
+
+
 .auth-header {
   position: fixed;
   top: 20px;

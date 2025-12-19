@@ -1,50 +1,30 @@
-import React from 'react';
-import { addPoint, getAllPoints } from '../../api/api';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../components/AuthContext/AuthContext';
 import './MainPage.css';
+import { GraphCard } from '../../components/GraphCard/GraphCard';
+import { PointFormCard } from '../../components/PointFormCard/PointFormCard';
+import { ResultsTableCard } from '../../components/ResultsTableCard/ResultsTableCard';
+import { fetchPointsAtom } from '../../atoms/points';
+import { useAtom } from 'jotai';
+
+import backgroundImage from '../../assets/images/background.png';
+
 
 export function MainPage() {
   const auth = useAuth();
-  const navigate = useNavigate();
+  const [, fetchPoints] = useAtom(fetchPointsAtom);
 
-  const handleAddRandomPoint = async () => {
-    try {
-      // создаем рандомные координаты
-      const x = (Math.random() * 10 - 5).toFixed(2); // -5..5
-      const y = (Math.random() * 10 - 5).toFixed(2);
-      const r = (Math.random() * 5 + 1).toFixed(2);  // 1..6
-
-      await addPoint(auth, parseFloat(x), parseFloat(y), parseFloat(r));
-      console.log(`Добавлена точка: x=${x}, y=${y}, r=${r}`);
-    } catch (err) {
-      console.error('Ошибка добавления точки:', err);
-    }
-  };
-
-  const handleShowAllPoints = async () => {
-    try {
-      const { data: points } = await getAllPoints(auth);
-      console.log('Все точки:', points);
-    } catch (err) {
-      console.error('Ошибка получения точек:', err);
-    }
-  };
-
-  const handleLogout = () => {
-    auth.destroyTokens();
-    navigate('/auth');
-  };
+  useEffect(() => {
+    fetchPoints(auth);
+  }, [auth]);
 
   return (
-    <div className="main-page">
-      <h1>Главная страница</h1>
-      <p>Добро пожаловать в приложение!</p>
-
-      <div className="main-buttons">
-        <button onClick={handleAddRandomPoint}>Добавить рандомную точку</button>
-        <button onClick={handleShowAllPoints}>Показать все точки (консоль)</button>
-        <button onClick={handleLogout}>Logout</button>
+    <div className="main-background" style={{backgroundImage: `url(${backgroundImage})`}}>
+      <div className="main-page">
+        <GraphCard/>
+        <PointFormCard/>
+        <ResultsTableCard/>
       </div>
     </div>
   );

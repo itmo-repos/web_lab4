@@ -1,0 +1,87 @@
+.main-background {
+  max-height: 100vh;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  overflow: hidden;
+}
+
+.main-page {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+@media (min-width: 1052px) {
+  .main-page {
+    display: grid;
+    grid-template-areas:
+      "graph form"
+      "graph table";
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 16px;
+  }
+
+  .graph-card {
+    grid-area: graph;
+  }
+
+  .point-card {
+    grid-area: form;
+  }
+
+  .results-card-container {
+    grid-area: table;
+    width: 100%;
+  }
+}
+
+/* Настройка для планшета: >=762px и <1052px */
+@media (min-width: 762px) and (max-width: 1051px) {
+  .main-page {
+    display: grid;
+    grid-template-areas:
+      "graph form"
+      "table table";
+    grid-template-columns: 1fr 1fr; /* график и форма сверху по 50% */
+    grid-template-rows: auto 1fr;   /* таблица на всю ширину снизу */
+    gap: 16px;
+  }
+
+  .graph-card {
+    grid-area: graph;
+  }
+
+  .point-card {
+    grid-area: form;
+  }
+
+  .results-card-container {
+    grid-area: table;
+    width: 100%;
+  }
+}
+
+/* Для мобильного (<762px) остаётся столбик */
+@media (max-width: 761px) {
+  .main-page {
+    flex-direction: column;
+  }
+
+  .graph-card,
+  .point-card,
+  .results-card-container {
+    width: 100%;
+  }
+}

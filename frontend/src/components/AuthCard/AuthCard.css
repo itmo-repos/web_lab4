@@ -11,6 +11,8 @@
   pointer-events: all;
   max-width: calc(100vw - 32px); 
   padding: 32px;
+  box-sizing: border-box;
+
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(16px);

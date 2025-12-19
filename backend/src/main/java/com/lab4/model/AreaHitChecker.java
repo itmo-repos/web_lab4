@@ -17,16 +17,20 @@ public class AreaHitChecker {
 
         BigDecimal xBD = point.x(), yBD = point.y(), rBD = point.r();
 
-        if (xBD.abs(MATH_CONTEXT).compareTo(new BigDecimal("4.0", MATH_CONTEXT)) > 0) {
-            return "Ошибка валидации: X по модулю не должно превышать 4";
+        if (xBD.abs(MATH_CONTEXT).compareTo(new BigDecimal("7.0", MATH_CONTEXT)) > 0) {
+            return "Ошибка валидации: X по модулю не должно превышать 7";
         }
 
-        if (yBD.compareTo(new BigDecimal("-5")) < 0 || yBD.compareTo(new BigDecimal("3")) > 0) {
-            return "Ошибка валидации: Y должно быть от -5 до 3";
+        if (yBD.abs(MATH_CONTEXT).compareTo(new BigDecimal("7.0", MATH_CONTEXT)) > 0) {
+            return "Ошибка валидации: Y по модулю не должно превышать 7";
         }
 
-        if (rBD.abs(MATH_CONTEXT).compareTo(new BigDecimal("4.0", MATH_CONTEXT)) > 0) {
-            return "Ошибка валидации: R по модулю не должно превышать 4";
+        // if (rBD.abs(MATH_CONTEXT).compareTo(new BigDecimal("4.0", MATH_CONTEXT)) > 0) {
+        //     return "Ошибка валидации: R по модулю не должно превышать 4";
+        // }
+
+        if (rBD.compareTo(new BigDecimal("0")) < 0 || rBD.compareTo(new BigDecimal("4")) > 0) {
+            return "Ошибка валидации: R должно быть положительным, не больше 4";
         }
 
         return null;
@@ -36,11 +40,11 @@ public class AreaHitChecker {
 
         BigDecimal xBD = point.x(), yBD = point.y(), rBD = point.r();
 
-        if (rBD.signum() < 0) {
-            rBD = rBD.abs();
-            xBD = xBD.negate();
-            yBD = yBD.negate();
-        }
+        // if (rBD.signum() < 0) {
+        //     rBD = rBD.abs();
+        //     xBD = xBD.negate();
+        //     yBD = yBD.negate();
+        // }
 
         BigDecimal half = new BigDecimal("0.5", MATH_CONTEXT);
         
